@@ -1,0 +1,25 @@
+.admin-dashboard-container{
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    min-height: calc(100vh -70px);
+    background: #f4f7f6;
+
+}
+.dashboard-reports-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+    gap:30px;
+}
+.reported-card{
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+.reported-card h2{
+    font-size: 18px;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 20px;
+    
+}
