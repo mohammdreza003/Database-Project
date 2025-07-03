@@ -1,0 +1,36 @@
+.admin-header{
+    display: flex;
+    /* justify-content: space-between; <-- این خط رو حذف یا کامنت کن */
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    gap: 40px; 
+
+}
+.header-left{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.header-left .fas.fa-store{
+    font-size: 24px;
+    color: #333;
+}
+.header-center h1{ 
+    font-size: 20px;
+    color: #333;
+    margin: 0;
+    margin-left: 20px; 
+}
+.header-right{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-left: auto; 
+}
+.header-right .fas.fa-user-circle{
+    font-size: 28px;
+    color: #555;
+    cursor: pointer;
+}   

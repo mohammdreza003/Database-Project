@@ -1,0 +1,13 @@
+@media (max-width: 768px) {
+    .admin-dashboard-container {
+        grid-template-columns: 1fr; 
+    }
+    .admin-sidebar {
+        width: 100%;
+    }
+    .admin-header {
+        flex-direction: column; 
+        align-items: flex-start; 
+        padding: 15px;
+    }
+}
