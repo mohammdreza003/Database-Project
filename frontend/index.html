@@ -18,48 +18,43 @@
       href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
       rel="stylesheet"
     />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <title>Admin dashboard</title>
   </head>
   <body>
     <header class="admin-header">
-
       <div class="header-left">
         <i class="fas fa-store"></i>
       </div>
-
       <div class="header-center">
         <h1>E-Commerce Admin Dashboard</h1>
       </div>
-
       <div class="header-right">
         <i class="fas fa-user-circle"></i>
       </div>
-      
     </header>
-    <main class="dashboard-main-content">
 
-      <section class="dashboard-reported-grid">
+    <div class="admin-dashboard-container">
+        <aside class="admin-sidebar">
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="#"><i class="fas fa-box"></i> Products</a></li>
+                    <li><a href="#"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                    <li><a href="#"><i class="fas fa-users"></i> Customers</a></li>
+                    <li><a href="#"><i class="fas fa-chart-line"></i> Reports</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn btn-logout">Logout</button>
+            </div>
+        </aside>
 
-        <div class="reported-card top-selling">
-          <h2>Top-selling product(s)</h2>
-        </div>
-
-        <div class="reported-card monthly-sales">
-          <h2>Monthly Sales by category</h2>
-        </div>
-
-        <div class="reported-card low-stack-alert">
-          <h2>Low Stock Alerts</h2>
-        </div>
-
-        <div class="reported-card active-customer">
-          <h2>Customers with +5 Purchases</h2>
-        </div>
-
-      </section>
-
-    </main>
-    <script src="main.js"></script>
+        <main class="dashboard-main-content">
+            <section class="dashboard-reports-grid">
+                </section>
+        </main>
+    </div> <script type="module" src="js/main.js"></script>
   </body>
 </html>

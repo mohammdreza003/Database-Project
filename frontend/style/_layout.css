@@ -1,16 +1,25 @@
 .admin-dashboard-container{
     display: grid;
     grid-template-columns: 250px 1fr;
-    min-height: calc(100vh -70px);
-    background: #f4f7f6;
-
+    min-height: calc(100vh - 70px); /* فاصله اینجا اصلاح شد */
+    background: #f4f7f6; /* رنگ پس‌زمینه محتوای اصلی داشبورد */
 }
+
+.dashboard-main-content {
+    padding: 30px; /* پدینگ اطراف محتوای اصلی داشبورد مطابق طرح */
+    overflow-y: auto; /* برای اسکرول شدن محتوا اگر زیاد بود */
+}
+
 .dashboard-reports-grid{
     display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap:30px;
 }
-.reported-card{
+
+/* ------------------------------------------------------------------ */
+/* _admin-dashboard.css or _cards.css content (استایل‌های کارت‌های گزارش و محتوای داخلی) */
+/* ------------------------------------------------------------------ */
+.reported-card{ /* اگر در HTML ات 'reported-card' است، همین را نگه دار، وگرنه به 'report-card' تغییر بده */
     background-color: #ffffff;
     border-radius: 8px;
     padding: 25px;
@@ -20,6 +29,67 @@
     font-size: 18px;
     color: #333;
     margin-top: 0;
-    margin-bottom: 20px;
-    
+    margin-bottom: 20px; /* فاصله از پایین تیتر در کارت‌ها */
+}
+
+/* استایل برای آیتم‌های لیست داخل کارت‌ها (Top-Selling و Customers) */
+.product-item-row,
+.customer-item {
+    display: flex;
+    justify-content: space-between; /* نام چپ، عدد راست */
+    align-items: center;
+    padding: 8px 0; /* پدینگ عمودی برای فاصله ردیف ها */
+    font-size: 14px;
+    color: #555;
+    border-bottom: 1px solid #eee; /* خط جداکننده */
+}
+/* حذف خط جداکننده از آخرین آیتم در لیست‌ها */
+.products-list .product-item-row:last-child, 
+.customer-list .customer-item:last-child {
+    border-bottom: none;
+}
+
+/* استایل برای آیتم‌های هشدار موجودی کم */
+.low-stock-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0; /* فاصله بالا و پایین */
+    color: #e74c3c; /* رنگ قرمز برای متن */
+    font-weight: 500;
+    font-size: 14px;
+}
+.low-stock-item .fas.fa-exclamation-triangle {
+    margin-right: 10px; /* فاصله آیکون از متن */
+    font-size: 16px;
+}
+
+/* استایل برای کانتینرهای فیلترها (برای فاصله‌گذاری لیبل و Select) */
+.month-year-filter,
+.filter-range { /* هر دو کلاس رو با هم انتخاب کن */
+    display: flex; /* استفاده از فلکس‌باکس برای لیبل و select */
+    align-items: center;
+    gap: 10px; /* فاصله بین لیبل و select box */
+    margin-bottom: 15px; /* فاصله از نمودار/لیست زیرش */
+}
+
+/* استایل برای کادرهای انتخاب (Select Boxes) در فیلترها - **بدون تکرار** */
+.filter-range select,
+.month-year-filter select {
+    padding: 8px 12px;
+    border: 1px solid #ddd; /* بوردر ملایم‌تر */
+    border-radius: 5px;
+    background-color: #f9f9f9; /* پس‌زمینه کمی تیره‌تر */
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    outline: none; /* حذف خط آبی هنگام فوکوس */
+    -webkit-appearance: none; /* برای مرورگرهای Webkit (Chrome, Safari) */
+    -moz-appearance: none;    /* برای مرورگرهای Firefox */
+    appearance: none;         /* استاندارد جدید */
+    /* برای اضافه کردن arrow سفارشی: */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center; /* فلش رو در سمت راست قرار میده */
+    background-size: 12px; /* اندازه فلش */
+    padding-right: 30px; /* فضای خالی برای arrow */
 }
