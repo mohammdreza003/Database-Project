@@ -1,4 +1,5 @@
 USE store;
+--تعریف  TABLE ها برای فروشگاه آنلاین
 
 CREATE TABLE Categories(
     category_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -52,3 +53,77 @@ CREATE TABLE Shipping(
     tracking_code VARCHAR(50),
     FOREIGN KEY (order_id) REFERENCES Orders(order_id)
 );
+-- پیدا کردن پرفروشترین محصول در بازه زمانی مشخص
+SET @start_date = '2025-07-01';
+SET @end_date = '2025-07-05 01:45:00';
+
+SELECT 
+    p.product_id,
+    p.name,
+    SUM(oi.quantity) AS total_sold
+FROM 
+    Products p
+JOIN 
+    Order_Items oi ON p.product_id = oi.product_id
+JOIN 
+    Orders o ON oi.order_id = o.order_id
+WHERE 
+    o.order_date BETWEEN @start_date AND @end_date
+GROUP BY 
+    p.product_id, p.name
+ORDER BY 
+    total_sold DESC
+LIMIT 1;
+-- محاسبه کل فروش ماهانه هر دستهبندی محصول
+SELECT 
+    c.category_id,
+    c.name AS category_name,
+    DATE_FORMAT(o.order_date, '%Y-%m') AS month,
+    SUM(oi.quantity * p.price) AS total_revenue
+FROM 
+    Categories c
+JOIN 
+    Products p ON c.category_id = p.category_id
+JOIN 
+    Order_Items oi ON p.product_id = oi.product_id
+JOIN 
+    Orders o ON oi.order_id = o.order_id
+GROUP BY 
+    c.category_id, c.name, DATE_FORMAT(o.order_date, '%Y-%m')
+ORDER BY 
+    c.category_id, month;
+
+--نمایش محصولات با موجودی کمتر از ۱۰ تا.
+SELECT 
+    product_id,
+    name,
+    stock,
+    category_id,
+    created_at
+FROM 
+    Products
+WHERE 
+    stock < 10
+ORDER BY 
+    stock ASC;
+
+--  نمایش اطلاعات مشتریان با بیش از ۵ سفارش در ماه گذشته
+SELECT 
+    c.customer_id,
+    c.first_name,
+    c.last_name,
+    c.email,
+    c.phone,
+    COUNT(o.order_id) AS order_count
+FROM 
+    Customers c
+JOIN 
+    Orders o ON c.customer_id = o.customer_id
+WHERE 
+    o.order_date BETWEEN '2025-06-05' AND '2025-07-05 02:39:00'
+GROUP BY 
+    c.customer_id, c.first_name, c.last_name, c.email, c.phone
+HAVING 
+    COUNT(o.order_id) > 5
+ORDER BY 
+    order_count DESC;
