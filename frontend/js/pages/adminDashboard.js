@@ -1,21 +1,30 @@
-// frontend/js/pages/adminDashboard.js
-
 import { fetchAll } from '../api/productsApi.js';
+import { topSellingfetch } from '../api/topsellingApi.js';
 
 function createTopSellingCard(productsData) {
-    let productsListHtml = productsData.map(product => `
-        <div class="product-item-row">
-            <span>${product.name}</span>
-            <span>${product.sales} sales (${product.percentage})</span>
-        </div>
-    `).join('');
+    let productsListHtml = '';
+    if (productsData && productsData.length > 0) {
+        productsListHtml = productsData.map(product => `
+            <div class="product-item-row">
+                <span>${product.name}</span>
+                <span>${product.sales} sales (${product.percentage})</span>
+            </div>
+        `).join('');
+    } else {
+        productsListHtml = `
+            <div class="no-data-message" style="text-align: center; padding: 20px; color: #888;">
+                No top-selling products found for this period.
+            </div>
+        `;
+    }
 
     return `
         <div class="report-card top-selling">
             <h2>Top-Selling Product(s)</h2>
             <div class="filter-range">
                 Filter Range: 
-                <select>
+                <select id="topSellingYearFilter">
+                    <option value="2025">2025</option>
                     <option value="2024">2024</option>
                     <option value="2023">2023</option>
                 </select>
@@ -131,6 +140,36 @@ function renderMonthlySalesChart(salesData) {
     });
 }
 
+async function getTopSellingCardHtml(year) {
+    const startOfYear = new Date(`${year}-01-01`);
+    const endOfYear = new Date(`${year}-12-31`);   
+
+    const topSellingProductsData = await topSellingfetch(startOfYear, endOfYear);
+    
+    let dataToDisplay = [];
+
+    if (topSellingProductsData && !topSellingProductsData.message) {
+        if (typeof topSellingProductsData === 'object' && !Array.isArray(topSellingProductsData)) {
+            dataToDisplay = [topSellingProductsData];
+        } else if (Array.isArray(topSellingProductsData)) {
+            dataToDisplay = topSellingProductsData;
+        }
+    }
+
+    if (dataToDisplay.length > 0) {
+        const formattedProducts = dataToDisplay.map(product => ({
+            name: product.name,
+            sales: product.total_sold, 
+            percentage: "N/A" 
+        }));
+        return createTopSellingCard(formattedProducts);
+    } else {
+        console.warn(`No top selling products found for ${year} from API. Falling back to 'No Data' message.`);
+        return createTopSellingCard([]); 
+    }
+}
+
+
 export async function initAdminDashboard() {
     const reportsGrid = document.querySelector(".dashboard-reports-grid");
 
@@ -141,22 +180,31 @@ export async function initAdminDashboard() {
 
     console.log("Admin Dashboard initialization started...");
 
-  const allProductsFromAPI = await fetchAll(); 
-
     reportsGrid.innerHTML = ""; 
 
+    const defaultYear = 2025; 
+    const topSellingCardHtml = await getTopSellingCardHtml(defaultYear);
+    reportsGrid.innerHTML += topSellingCardHtml;
+
+    const yearFilterSelect = document.getElementById('topSellingYearFilter');
+    if (yearFilterSelect) {
+        yearFilterSelect.value = defaultYear;
+        yearFilterSelect.addEventListener('change', async (event) => {
+            const selectedYear = parseInt(event.target.value);
+            const newCardHtml = await getTopSellingCardHtml(selectedYear);
+            const currentTopSellingCard = reportsGrid.querySelector('.report-card.top-selling');
+            if(currentTopSellingCard) {
+                currentTopSellingCard.outerHTML = newCardHtml;
+            }
+        });
+    }
+    
+    const allProductsFromAPI = await fetchAll(); 
+
     if (allProductsFromAPI) {
-        const topSellingProductsForCard = allProductsFromAPI.slice(0, 4);
-        reportsGrid.innerHTML += createTopSellingCard(topSellingProductsForCard);
+        console.log("All products fetched successfully (for potential future use):", allProductsFromAPI);
     } else {
-        console.warn("Falling back to mock data for Top-Selling Products.");
-        const mockTopSellingProducts = [
-            { name: "Laptop X (Mock)", sales: 120, percentage: "25%" },
-            { name: "Mouse Pro (Mock)", sales: 90, percentage: "18%" },
-            { name: "Keyboard RGB (Mock)", sales: 70, percentage: "15%" },
-            { name: "Webcam HD (Mock)", sales: 60, percentage: "12%" },
-        ];
-        reportsGrid.innerHTML += createTopSellingCard(mockTopSellingProducts);
+        console.warn("Could not fetch all products from API.");
     }
 
     const mockMonthlySalesData = [
