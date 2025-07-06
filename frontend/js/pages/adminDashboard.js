@@ -1,5 +1,6 @@
 import { fetchAll } from '../api/productsApi.js';
 import { topSellingfetch } from '../api/topsellingApi.js';
+import { fetchMonthlySales } from '../api/monthlySalesApi.js';
 
 function createTopSellingCard(productsData) {
     let productsListHtml = '';
@@ -7,7 +8,7 @@ function createTopSellingCard(productsData) {
         productsListHtml = productsData.map(product => `
             <div class="product-item-row">
                 <span>${product.name}</span>
-                <span>${product.sales} sales (${product.percentage})</span>
+                <span>${product.sales} sales (${product.percentage || 'N/A'})</span>
             </div>
         `).join('');
     } else {
@@ -22,7 +23,6 @@ function createTopSellingCard(productsData) {
         <div class="report-card top-selling">
             <h2>Top-Selling Product(s)</h2>
             <div class="filter-range">
-                Filter Range: 
                 <select id="topSellingYearFilter">
                     <option value="2025">2025</option>
                     <option value="2024">2024</option>
@@ -41,7 +41,6 @@ function createMonthlySalesCard(salesData) {
         <div class="report-card monthly-sales">
             <h2>Monthly Sales by Category</h2>
             <div class="month-year-filter">
-                Month/Year:
                 <select id="monthlySalesYearSelect">
                     <option value="2025">2025</option>
                     <option value="2024">2024</option>
@@ -141,6 +140,12 @@ function renderMonthlySalesChart(salesData) {
 }
 
 async function getTopSellingCardHtml(year) {
+    const reportsGrid = document.querySelector(".dashboard-reports-grid");
+    if (!reportsGrid) { 
+        console.error("reportsGrid element not found in getTopSellingCardHtml!");
+        return ''; 
+    }
+
     const startOfYear = new Date(`${year}-01-01`);
     const endOfYear = new Date(`${year}-12-31`);   
 
@@ -205,6 +210,19 @@ export async function initAdminDashboard() {
         console.log("All products fetched successfully (for potential future use):", allProductsFromAPI);
     } else {
         console.warn("Could not fetch all products from API.");
+    }
+
+    const defaultMonthlyYear = 2025; 
+    const defaultMonthlyMonth = 7; 
+
+    const monthlyYearFilterSelect = document.getElementById('monthlySalesYearSelect');
+    if (monthlyYearFilterSelect) {
+        monthlyYearFilterSelect.value = defaultMonthlyYear;
+        monthlyYearFilterSelect.addEventListener('change', async (event) => {
+            const selectedYear = parseInt(event.target.value);
+            const selectedMonth = parseInt(document.getElementById('monthlySalesMonthSelect').value);
+            await fetchAndRenderMonthlySales(selectedYear, selectedMonth);
+        });
     }
 
     const mockMonthlySalesData = [
