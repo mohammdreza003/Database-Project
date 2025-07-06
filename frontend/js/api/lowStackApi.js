@@ -1,7 +1,7 @@
 const API_URL = "http://localhost:3000"; 
 
 export async function fetchLowStockAlerts(threshold = 10) { 
-    const endpoint = `${API_URL}/backend/low_stock_products.php?threshold=${threshold}`;
+    const endpoint = `${API_URL}/backend/StockAlert.php?threshold=${threshold}`;
 
     try {
         console.log(`Fetching low stock products from: ${endpoint}`);
